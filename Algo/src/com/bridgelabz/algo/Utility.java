@@ -11,7 +11,11 @@ package com.bridgelabz.algo;
 
 import java.util.Scanner;
 import java.util.Vector;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public class Utility 
 {	
@@ -65,6 +69,12 @@ public class Utility
 	{
 		byte i=sc.nextByte();
 		return i;
+	}
+	
+	public double getDouble()
+	{
+		double d=sc.nextDouble();
+		return d;
 	}
 	/**
 	 * Purpose-To Find Two String are anagram or not
@@ -299,19 +309,24 @@ public class Utility
 	 * @param search
 	 * @return void
 	 */
-	public static void binarySearchString(String s[],String search)
+	public static boolean binarySearchString(String s[],String search)
 	{
 		bubbleSortString(s);
+
 		int lb=0;
 		int ub=s.length;
 		int mid=0;
-		while(lb<ub)
+		while(lb<=ub)
 		{
 			mid=(lb+ub)/2;
+			if(mid==s.length)
+			{
+				return false;
+			}
 			if(s[mid].equals(search))
 			{
 				System.out.println("Element Found At "+mid);
-				return;
+				return true;
 			}
 			else if(s[mid].compareTo(search)>0)
 			{
@@ -323,9 +338,7 @@ public class Utility
 			}
 		}
 		System.out.println("Element Not Found");
-		/*for(int i=0;i<s.length;i++)
-		System.out.println(s[i]);*/
-		
+		return false;
 	}
 	/**
 	 * Purpose-Searching A integer in integer array
@@ -361,4 +374,222 @@ public class Utility
 	
 	}
 	
+	public static void searchInFile(String search) throws IOException,NoSuchElementException
+	{
+		FileInputStream fis =new FileInputStream("SearchFile.txt");
+		Scanner sc=new Scanner(fis);
+		String stringarray=sc.next();
+		stringarray+=",";
+		//System.out.println(stringarray);
+		String s1[]=stringarray.split(",");
+		
+		boolean flag=Utility.binarySearchString(s1, search);
+		FileOutputStream fos=new FileOutputStream("SearchFile.txt");
+		boolean flagcoma=false;
+		if(flag==true)
+		{
+			for(int i=0;i<s1.length;i++)
+			{
+				if(s1[i].equals(search) )
+				{
+					if(i==0)
+					{
+						flagcoma=true;
+					}
+				continue;
+				}
+				
+				if(i==0)
+				{
+					fos.write(s1[i].getBytes());
+				}
+				else if(i<s1.length)
+				{
+					if(flagcoma==true)
+					{
+						fos.write(s1[i].getBytes());
+						flagcoma=false;
+						continue;
+					}
+					s1[i]=","+s1[i];
+					fos.write(s1[i].getBytes());
+				}
+			}
+		}
+		else
+		{
+			for(int i=0;i<s1.length;i++)
+			{
+				if(i==0)
+				{
+					fos.write(s1[i].getBytes());
+					
+				}
+				else
+				{
+					s1[i]=","+s1[i];
+					fos.write(s1[i].getBytes());
+
+				}
+			}
+			search=","+search;
+			fos.write(search.getBytes());
+		}
+	}
+	
+	public static void mergeSortOfString(String StringArray[],int lowerbound,int upperbound)
+	{
+		int mid=(lowerbound+upperbound)/2;
+		if(lowerbound<upperbound)
+		{
+			
+			Utility.mergeSortOfString(StringArray,lowerbound,mid);
+			Utility.mergeSortOfString(StringArray,mid+1,upperbound);
+			Utility.merging(StringArray,lowerbound,mid,upperbound);
+			
+		}
+	}
+	
+	public static void merging(String StringArray[],int lowerbound,int mid,int upperbound)
+	{
+		String[] arr=new String[upperbound-lowerbound+1];
+		
+		int lowerstart=lowerbound;
+		int upperstart=mid+1;
+		int fill=0;
+		while(lowerstart<=mid && upperstart<=upperbound)
+		{
+			
+		if(StringArray[lowerstart].compareTo(StringArray[upperstart])<=0)
+		{
+			arr[fill]=StringArray[lowerstart];
+			lowerstart++;
+			fill++;
+		}
+		else
+		{
+			arr[fill]=StringArray[upperstart];
+			upperstart++;
+			fill++;
+		}
+		}
+		while(lowerstart<=mid)
+		{
+			arr[fill]=StringArray[lowerstart];
+			lowerstart++;
+			fill++;
+		}
+		
+		while(upperstart<=upperbound)
+		{
+			arr[fill]=StringArray[upperstart];
+			upperstart++;
+			fill++;
+		}
+		for(int kx=0;kx<fill;kx++)
+		{
+			StringArray[lowerbound]=arr[kx];
+			lowerbound++;
+		}
+
+	}
+	
+	public static void minCoinCounter(int Price)
+	{
+		int NoteType[]= {1, 2, 5, 10, 50, 100, 500, 1000};
+		int NoteCount[]=new int[NoteType.length];
+		for(int start=NoteType.length-1;start>=0;start--)
+		{
+			NoteCount[start]=Price/NoteType[start];
+			Price=Price%NoteType[start];
+		}
+		
+		for(int start=NoteType.length-1;start>=0;start--)
+		{
+			System.out.println(NoteType[start]+"-->"+NoteCount[start]);
+		}
+	}
+	
+	public static double dayOfWeek(double month,double day,double year)
+	{
+		double year1 = year-(14-month)/12; 
+		double x=year1+(year1/4)-(year1*100)+(year1/400);
+		double month1= month+12*((14-month)/12)-2;
+		double day1=(day+x+31*month1/12)%7;
+		return day1;
+		
+	}
+	
+	public static int temperatureConversion(int temperature,boolean flag)
+	{
+		if(flag)
+		{
+			return (temperature*9)/5+32;
+		}
+		else
+		{
+			return (temperature-32)*5/9;
+		}
+	}
+	
+	public static double monthlyPayment(double Payment,double Year,int Rate)
+	{
+		double n=12*Year;
+		int n1=(int)n;
+		for(int i=0;i<n1;i++)
+		{
+			Payment=Payment+Payment*5/100;
+		}
+		return Payment;
+	}
+	
+	public static double SquareRoot(double Number)
+	{
+		double t=Number;
+		while(Math.abs(t-Number/t)>.000000000000001)
+		{
+			t=(t+Number/t)/2;
+		}
+		return t;
+	}
+	
+	public static String binaryOfNumber(int Number)
+	{
+		String s="";
+		while(Number>=1)
+		{
+			s+=Number%2;
+			Number=Number/2;
+		}
+		String s2="";
+		for(int start=s.length()-1;start>=0;start--)
+		{
+			s2+=s.charAt(start);
+		}
+		return s2;
+	}
+	
+	public static int nibbleSwap(int Number)
+	{
+		String binaryString=binaryOfNumber(Number);
+		int  x=8-binaryString.length();
+		String s="";
+		for(int i=0;i<x;i++)
+		{
+			s+="0";
+		}
+		
+		binaryString=s+binaryString;
+		String firstnibble=binaryString.substring(0,4);
+		String secondnibble=binaryString.substring(4);
+		binaryString=secondnibble+firstnibble;
+		x=1;
+		int changeNumber=0;
+		for(int start=binaryString.length()-1;start>=0;start--)
+		{
+			changeNumber=changeNumber+(Integer.parseInt(binaryString.charAt(start)+""))*x;
+			x=x*2;
+		}
+		return changeNumber;
+	}
 }
