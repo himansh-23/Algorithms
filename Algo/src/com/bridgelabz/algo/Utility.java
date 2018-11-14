@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 public class Utility 
 {	
 	//Scanner class Object Creation
-	public Scanner sc=new Scanner(System.in);
+	 public Scanner sc=new Scanner(System.in);
 	
 	/**
 	 * To get Integer Input
@@ -372,6 +372,54 @@ public class Utility
 		}
 		System.out.println("Element Not Found");
 	
+	}
+	
+	public static int findNumber(int Range)
+	{
+		int lower=0;
+		int upper=Range-1;
+		Utility input=new Utility();
+		int Answer=0;
+		while(lower<=upper)
+		{
+			int mid=(lower+upper)/2;
+			System.out.println("Is Your Number Between "+lower+" "+mid);
+			String s=input.getString();
+			
+			if((upper==lower || lower+1==upper) && s.equals("true"))
+			{
+				Answer=lower;
+				break;
+			}
+			else if((upper==lower || lower+1==upper) && s.equals("false"))
+			{
+				Answer=lower+1;
+				break;
+			}
+			if(s.equals("false"))
+			{
+				lower=mid+1;
+			}
+			else if(s.equals("true"))
+			{
+				upper=mid-1;
+			}
+		}
+		/*	if(lower==upper && s.equals("false"))
+			{
+				lower=lower+1;
+				break;
+			}
+			else if(s.equals("true"))
+			{
+				upper=mid-1;
+			}
+			else
+			{
+			lower=mid+1;
+			}*/
+		return Answer;
+		
 	}
 	
 	public static void searchInFile(String search) throws IOException,NoSuchElementException
